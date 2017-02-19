@@ -25,21 +25,18 @@ func (o *EqualOperator) Evaluate(condition, data interface{}) (bool, error) {
 			return d == cn, nil
 		}
 		return false, nil
-	case int:
-		if d, ok := data.(int); ok {
-			return d == cn, nil
-		}
-		return false, nil
+	case int8:
+		return numbersEqual(cn, data), nil
+	case int16:
+		return numbersEqual(cn, data), nil
+	case int32:
+		return numbersEqual(cn, data), nil
+	case int64:
+		return numbersEqual(cn, data), nil
 	case float32:
-		if d, ok := data.(float32); ok {
-			return d == cn, nil
-		}
-		return false, nil
+		return numbersEqual(cn, data), nil
 	case float64:
-		if d, ok := data.(float64); ok {
-			return d == cn, nil
-		}
-		return false, nil
+		return numbersEqual(cn, data), nil
 	case map[string]interface{}:
 		m := true
 		for prop, cond := range cn {
