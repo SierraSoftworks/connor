@@ -71,6 +71,11 @@ in your conditions.
 { "$gt": 5.3 }
 ```
 
+### Less Than `$lt`
+```json
+{ "$lt": 42 }
+```
+
 ### Set Contains `$in`
 ```json
 { "$in": [1, 2, 3] }
