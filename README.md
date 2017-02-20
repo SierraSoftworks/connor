@@ -81,6 +81,11 @@ in your conditions.
 { "$and": [{ "$gt": 5 }, { "$lt": 10 }]}
 ```
 
+### Logical Or `$or`
+```json
+{ "$or": [{ "$gt": 10 }, { "$eq": 0 }]}
+```
+
 ## Custom Operators
 Connor supports registering your own custom operators for any additional condition
 evaluation you wish to perform. These operators are registered using the `Register()`
