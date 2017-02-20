@@ -64,6 +64,18 @@ func TestEqual(t *testing.T) {
 				true,
 				false,
 			},
+			{
+				`{ "x": null }`,
+				`{ "x": null, "y": 2 }`,
+				true,
+				false,
+			},
+			{
+				`{ "x": 1 }`,
+				`{ "x": null, "y": 2 }`,
+				false,
+				false,
+			},
 		}
 
 		for _, c := range cases {
