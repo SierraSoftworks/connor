@@ -66,6 +66,11 @@ in your conditions.
 { "$ne": "value" }
 ```
 
+### Greater Than `$gt`
+```json
+{ "$gt": 5.3 }
+```
+
 ### Set Contains `$in`
 ```json
 { "$in": [1, 2, 3] }
