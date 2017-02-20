@@ -81,6 +81,11 @@ in your conditions.
 { "$lt": 42 }
 ```
 
+### Less Than or Equal `$le`
+```json
+{ "$le": 42 }
+```
+
 ### Set Contains `$in`
 ```json
 { "$in": [1, 2, 3] }
