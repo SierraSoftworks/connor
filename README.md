@@ -76,6 +76,11 @@ in your conditions.
 { "$nin": [1, 2, 3] }
 ```
 
+### Logical And `$and`
+```json
+{ "$and": [{ "$gt": 5 }, { "$lt": 10 }]}
+```
+
 ## Custom Operators
 Connor supports registering your own custom operators for any additional condition
 evaluation you wish to perform. These operators are registered using the `Register()`
