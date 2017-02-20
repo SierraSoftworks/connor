@@ -71,6 +71,11 @@ in your conditions.
 { "$gt": 5.3 }
 ```
 
+### Greater Than or Equal `$ge`
+```json
+{ "$ge": 5 }
+```
+
 ### Less Than `$lt`
 ```json
 { "$lt": 42 }
