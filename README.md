@@ -1,7 +1,7 @@
 # Connor
 **Flexible condition DSL for Go**
 
-Connor is a simple condition DLS and evaluator for Go inspired by MongoDB's
+Connor is a simple condition DSS and evaluator for Go inspired by MongoDB's
 query language. It aims to provide a simple and straightforward means to
 express conditions against `map[string]interface{}` objects for everything
 from rules engines to query tools.
