@@ -52,6 +52,12 @@ func TestAnd(t *testing.T) {
 				true,
 				false,
 			},
+			{
+				`{ "x": { "$and": 1 } }`,
+				`{ "x": 1, "y": 2 }`,
+				false,
+				true,
+			},
 		}
 
 		for _, c := range cases {
