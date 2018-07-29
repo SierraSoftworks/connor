@@ -96,6 +96,11 @@ in your conditions.
 { "$nin": [1, 2, 3] }
 ```
 
+### String Contains `$contains`
+```json
+{ "$contains": "test" }
+```
+
 ### Logical And `$and`
 ```json
 { "$and": [{ "$gt": 5 }, { "$lt": 10 }]}
