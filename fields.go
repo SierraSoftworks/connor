@@ -1,6 +1,7 @@
 package connor
 
 import (
+	"strconv"
 	"strings"
 )
 
@@ -16,6 +17,12 @@ func getField(data map[string]interface{}, field string) interface{} {
 			}
 
 			d = f
+		case []interface{}:
+			fpi, err := strconv.Atoi(fp)
+			if err != nil {
+				return nil
+			}
+			d = td[fpi]
 		default:
 			return nil
 		}
