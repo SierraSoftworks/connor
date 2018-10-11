@@ -104,41 +104,61 @@ var _ = Describe("Get", func() {
 	}
 
 	for dataStr, cs := range cases {
+		dataStr := dataStr
 		cs := cs
 		Describe(fmt.Sprintf("with %s as data", dataStr), func() {
 			for _, c := range cs {
 				c := c
 				Context(fmt.Sprintf("getting the field %s", c.field), func() {
-					var value interface{}
-					var expected interface{}
-					var found bool
+					var (
+						data     map[string]interface{}
+						value    interface{}
+						expected interface{}
+						found    bool
+					)
 
 					BeforeEach(func() {
-						var data map[string]interface{}
 						Expect(json.NewDecoder(strings.NewReader(dataStr)).Decode(&data)).To(Succeed())
+					})
+					BeforeEach(func() {
 						Expect(json.NewDecoder(strings.NewReader(c.value)).Decode(&expected)).To(Succeed())
-						value, found = fields.Get(data, c.field)
 					})
 
 					Context("Get()", func() {
+						JustBeforeEach(func() {
+							value, found = fields.Get(data, c.field)
+						})
+
 						if c.found {
-							It("should find the field", func() {
+							Specify("should find the field", func() {
 								Expect(found).To(BeTrue())
 							})
 						} else {
-							It("should not find the field", func() {
+							Specify("should not find the field", func() {
 								Expect(found).To(BeFalse())
 							})
 						}
 
-						It(fmt.Sprintf("should return %s", c.value), func() {
-							Expect(value).To(BeEquivalentTo(expected))
+						Specify(fmt.Sprintf("should return %s", c.value), func() {
+							if expected == nil {
+								Expect(value).To(BeNil())
+							} else {
+								Expect(value).To(BeEquivalentTo(expected))
+							}
 						})
 					})
 
 					Context("TryGet()", func() {
-						It(fmt.Sprintf("should return %s", c.value), func() {
-							Expect(value).To(BeEquivalentTo(expected))
+						JustBeforeEach(func() {
+							value = fields.TryGet(data, c.field)
+						})
+
+						Specify(fmt.Sprintf("should return %s", c.value), func() {
+							if expected == nil {
+								Expect(value).To(BeNil())
+							} else {
+								Expect(value).To(BeEquivalentTo(expected))
+							}
 						})
 					})
 				})
