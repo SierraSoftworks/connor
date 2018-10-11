@@ -3,6 +3,10 @@ package connor
 import (
 	"reflect"
 	"strings"
+
+	"github.com/SierraSoftworks/connor/internal/numbers"
+
+	"github.com/SierraSoftworks/connor/internal/fields"
 )
 
 func init() {
@@ -39,17 +43,17 @@ func (o *EqualOperator) Evaluate(condition, data interface{}) (bool, error) {
 		}
 		return false, nil
 	case int8:
-		return numbersEqual(cn, data), nil
+		return numbers.Equal(cn, data), nil
 	case int16:
-		return numbersEqual(cn, data), nil
+		return numbers.Equal(cn, data), nil
 	case int32:
-		return numbersEqual(cn, data), nil
+		return numbers.Equal(cn, data), nil
 	case int64:
-		return numbersEqual(cn, data), nil
+		return numbers.Equal(cn, data), nil
 	case float32:
-		return numbersEqual(cn, data), nil
+		return numbers.Equal(cn, data), nil
 	case float64:
-		return numbersEqual(cn, data), nil
+		return numbers.Equal(cn, data), nil
 	case map[string]interface{}:
 		m := true
 		for prop, cond := range cn {
@@ -66,7 +70,7 @@ func (o *EqualOperator) Evaluate(condition, data interface{}) (bool, error) {
 
 				m = m && mm
 			} else if d, ok := data.(map[string]interface{}); ok {
-				mm, err := MatchWith("$eq", cond, getField(d, prop))
+				mm, err := MatchWith("$eq", cond, fields.TryGet(d, prop))
 				if err != nil {
 					return false, err
 				}

@@ -3,6 +3,8 @@ package connor
 import (
 	"fmt"
 	"time"
+
+	"github.com/SierraSoftworks/connor/internal/numbers"
 )
 
 func init() {
@@ -19,7 +21,7 @@ func (o *GreaterOperator) Name() string {
 }
 
 func (o *GreaterOperator) Evaluate(condition, data interface{}) (bool, error) {
-	switch cn := tryUpcastNumber(condition).(type) {
+	switch cn := numbers.TryUpcast(condition).(type) {
 	case string:
 		switch dn := data.(type) {
 		case string:
@@ -27,7 +29,7 @@ func (o *GreaterOperator) Evaluate(condition, data interface{}) (bool, error) {
 		}
 		return false, nil
 	case float64:
-		switch dn := tryUpcastNumber(data).(type) {
+		switch dn := numbers.TryUpcast(data).(type) {
 		case float64:
 			return dn > cn, nil
 		case int64:
@@ -36,7 +38,7 @@ func (o *GreaterOperator) Evaluate(condition, data interface{}) (bool, error) {
 
 		return false, nil
 	case int64:
-		switch dn := tryUpcastNumber(data).(type) {
+		switch dn := numbers.TryUpcast(data).(type) {
 		case float64:
 			return dn > float64(cn), nil
 		case int64:

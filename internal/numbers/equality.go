@@ -1,8 +1,8 @@
-package connor
+package numbers
 
-func numbersEqual(condition, data interface{}) bool {
-	uc := tryUpcastNumber(condition)
-	ud := tryUpcastNumber(data)
+func Equal(condition, data interface{}) bool {
+	uc := TryUpcast(condition)
+	ud := TryUpcast(data)
 
 	switch ucv := uc.(type) {
 	case int64:
@@ -23,26 +23,5 @@ func numbersEqual(condition, data interface{}) bool {
 		return false
 	default:
 		return false
-	}
-}
-
-func tryUpcastNumber(n interface{}) interface{} {
-	switch nn := n.(type) {
-	case int8:
-		return int64(nn)
-	case int16:
-		return int64(nn)
-	case int32:
-		return int64(nn)
-	case int:
-		return int64(nn)
-	case int64:
-		return nn
-	case float32:
-		return float64(nn)
-	case float64:
-		return nn
-	default:
-		return n
 	}
 }

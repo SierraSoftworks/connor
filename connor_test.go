@@ -1,43 +1,42 @@
-package connor
+package connor_test
 
 import (
-	"bytes"
-	"encoding/json"
-	"testing"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/SierraSoftworks/connor"
 )
 
-func prepConds(d string) map[string]interface{} {
-	var v map[string]interface{}
-	So(json.NewDecoder(bytes.NewBufferString(d)).Decode(&v), ShouldBeNil)
-	return v
-}
+var _ = Describe("Connor", func() {
+	Describe("with a malformed operator", func() {
+		_, err := MatchWith("malformed", nil, nil)
 
-func prepData(d string) map[string]interface{} {
-	var v map[string]interface{}
-	So(json.NewDecoder(bytes.NewBufferString(d)).Decode(&v), ShouldBeNil)
-	return v
-}
-
-func prepValue(d string) interface{} {
-	var v interface{}
-	So(json.NewDecoder(bytes.NewBufferString(d)).Decode(&v), ShouldBeNil)
-	return v
-}
-
-func TestConnor(t *testing.T) {
-	Convey("Connor", t, func() {
-		Convey("Malformed Operator", func() {
-			_, err := MatchWith("malformed", nil, nil)
-			So(err, ShouldNotBeNil)
-			So(err.Error(), ShouldEqual, "operator should have '$' prefix")
+		It("should return an error", func() {
+			Expect(err).ToNot(BeNil())
 		})
 
-		Convey("Invalid Operator", func() {
-			_, err := MatchWith("$invalid", nil, nil)
-			So(err, ShouldNotBeNil)
-			So(err.Error(), ShouldEqual, "unknown operator 'invalid'")
+		It("should provide a descriptive error", func() {
+			Expect(err.Error()).To(Equal("operator should have '$' prefix"))
+		})
+
+		It("should return a short error", func() {
+			Expect(len(err.Error()) < 80).To(BeTrue(), "error message should be less than 80 characters long")
 		})
 	})
-}
+
+	Describe("with an invalid/unknown operator", func() {
+		_, err := MatchWith("$invalid", nil, nil)
+
+		It("should return an error", func() {
+			Expect(err).ToNot(BeNil())
+		})
+
+		It("should provide a descriptive error", func() {
+			Expect(err.Error()).To(Equal("unknown operator 'invalid'"))
+		})
+
+		It("should return a short error", func() {
+			Expect(len(err.Error()) < 80).To(BeTrue(), "error message should be less than 80 characters long")
+		})
+	})
+})

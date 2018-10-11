@@ -1,85 +1,65 @@
-package connor
+package connor_test
 
 import (
-	"fmt"
-	"testing"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/SierraSoftworks/connor"
 )
 
-func TestNotEqual(t *testing.T) {
-	Convey("$ne", t, func() {
-		cases := []struct {
-			conds string
-			data  string
-
-			match  bool
-			hasErr bool
-		}{
-			{
-				`{ "x": { "$ne": 1 } }`,
-				`{ "x": 1, "y": 2 }`,
-				false,
-				false,
-			},
-			{
-				`{ "x": { "$ne": 2 } }`,
-				`{ "x": 1, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "a": { "$ne": 1 } }`,
-				`{ "x": 1, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "a.x": { "$ne": 1 } }`,
-				`{ "a": { "x": 1 }, "y": 2 }`,
-				false,
-				false,
-			},
-			{
-				`{ "a": { "$ne": 1 } }`,
-				`{ "a": { "x": 1 }, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "x": { "$ne": "1" } }`,
-				`{ "x": 1, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "x": { "$ne": 1 } }`,
-				`{ "x": "1", "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "x": { "$ne": { "z": 1 } } }`,
-				`{ "x": { "z": 1 }, "y": 2 }`,
-				false,
-				false,
-			},
-		}
-
-		for _, c := range cases {
-			Convey(fmt.Sprintf("%s & %s", c.data, c.conds), func() {
-				conds := prepConds(c.conds)
-				data := prepData(c.data)
-
-				m, err := Match(conds, data)
-				if c.hasErr {
-					So(err, ShouldNotBeNil)
-				} else {
-					So(err, ShouldBeNil)
-				}
-
-				So(m, ShouldEqual, c.match)
-			})
-		}
+var _ = Describe("$ne", func() {
+	It("should be registered as an operator", func() {
+		Expect(Operators()).To(ContainElement("ne"))
 	})
-}
+
+	cases := TestCases{
+		`{ "x": 1, "y": 2 }`: []TestCase{
+			{
+				"not match when the values are equal",
+				`{ "x": { "$ne": 1 } }`,
+				false,
+				false,
+			},
+			{
+				"match when the values are different",
+				`{ "x": { "$ne": 2 } }`,
+				true,
+				false,
+			},
+			{
+				"match when the field is not present",
+				`{ "a": { "$ne": 1 } }`,
+				true,
+				false,
+			},
+			{
+				"match when the types are different",
+				`{ "x": { "$ne": "1" } }`,
+				true,
+				false,
+			},
+		},
+		`{ "a": { "x": 1 }, "y": 2 }`: []TestCase{
+			{
+				"not match when a nested property has the same value",
+				`{ "a.x": { "$ne": 1 } }`,
+				false,
+				false,
+			},
+			{
+				"match when a nested property has a different value",
+				`{ "a": { "$ne": 1 } }`,
+				true,
+				false,
+			},
+			{
+				"match when a missing nested property is tested for value equality",
+				`{ "a": { "$ne": { "z": 1 } } }`,
+				true,
+				false,
+			},
+		},
+	}
+
+	cases.Generate(nil)
+})
