@@ -1,67 +1,53 @@
-package connor
+package connor_test
 
 import (
-	"fmt"
-	"testing"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/SierraSoftworks/connor"
 )
 
-func TestContains(t *testing.T) {
-	Convey("Contains", t, func() {
-		cases := []struct {
-			conds string
-			data  string
-
-			match  bool
-			hasErr bool
-		}{
-			{
-				`{"x":{"$contains":"abc"}}`,
-				`{"x":"abc"}`,
-				true,
-				false,
-			},
-			{
-				`{"x":{"$contains":"bc"}}`,
-				`{"x":"abc"}`,
-				true,
-				false,
-			},
-			{
-				`{"x":{"$contains":"ab"}}`,
-				`{"x":"abc"}`,
-				true,
-				false,
-			},
-			{
-				`{"x":{"$contains":"xyz"}}`,
-				`{"x":"abc"}`,
-				false,
-				false,
-			},
-			{
-				`{"x":{"$contains":"abc"}}`,
-				`{"x":1}`,
-				false,
-				true,
-			},
-		}
-
-		for _, c := range cases {
-			Convey(fmt.Sprintf("%s & %s", c.data, c.conds), func() {
-				conds := prepConds(c.conds)
-				data := prepData(c.data)
-
-				m, err := Match(conds, data)
-				if c.hasErr {
-					So(err, ShouldNotBeNil)
-				} else {
-					So(err, ShouldBeNil)
-				}
-
-				So(m, ShouldEqual, c.match)
-			})
-		}
+var _ = Describe("$contains", func() {
+	It("should be registered as an operator", func() {
+		Expect(Operators()).To(ContainElement("contains"))
 	})
-}
+
+	cases := TestCases{
+		`{"x":1}`: []TestCase{
+			{
+				"error if a non-string value is provided",
+				`{"x":{"$contains":"abc"}}`,
+				false,
+				true,
+			},
+		},
+		`{"x":"abc"}`: []TestCase{
+			{
+				"match a complete string",
+				`{"x":{"$contains":"abc"}}`,
+				true,
+				false,
+			},
+			{
+				"match a partial suffix",
+				`{"x":{"$contains":"bc"}}`,
+				true,
+				false,
+			},
+			{
+				"match a partial prefix",
+				`{"x":{"$contains":"ab"}}`,
+				true,
+				false,
+			},
+			{
+				"not match a different string",
+				`{"x":{"$contains":"xyz"}}`,
+				false,
+				false,
+			},
+		},
+	}
+
+	cases.Generate(nil)
+})

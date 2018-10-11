@@ -1,73 +1,60 @@
-package connor
+package connor_test
 
 import (
-	"fmt"
-	"testing"
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-	. "github.com/smartystreets/goconvey/convey"
+	. "github.com/SierraSoftworks/connor"
 )
 
-func TestIn(t *testing.T) {
-	Convey("$in", t, func() {
-		cases := []struct {
-			conds string
-			data  string
-
-			match  bool
-			hasErr bool
-		}{
-			{
-				`{ "x": { "$in": [1] } }`,
-				`{ "x": 1, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "x": { "$in": [2] } }`,
-				`{ "x": 1, "y": 2 }`,
-				false,
-				false,
-			},
-			{
-				`{ "x": { "$in": [1, 2, 3] } }`,
-				`{ "x": 1, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "a.x": { "$in": [1] } }`,
-				`{ "a": { "x": 1 }, "y": 2 }`,
-				true,
-				false,
-			},
-			{
-				`{ "a": { "$in": [1] } }`,
-				`{ "a": { "x": 1 }, "y": 2 }`,
-				false,
-				false,
-			},
-			{
-				`{ "a": { "$in": 1 } }`,
-				`{ "a": { "x": 1 }, "y": 2 }`,
-				false,
-				true,
-			},
-		}
-
-		for _, c := range cases {
-			Convey(fmt.Sprintf("%s & %s", c.data, c.conds), func() {
-				conds := prepConds(c.conds)
-				data := prepData(c.data)
-
-				m, err := Match(conds, data)
-				if c.hasErr {
-					So(err, ShouldNotBeNil)
-				} else {
-					So(err, ShouldBeNil)
-				}
-
-				So(m, ShouldEqual, c.match)
-			})
-		}
+var _ = Describe("$in", func() {
+	It("should be registered as an operator", func() {
+		Expect(Operators()).To(ContainElement("in"))
 	})
-}
+
+	cases := TestCases{
+
+		`{ "x": 1, "y": 2 }`: []TestCase{
+			{
+				"match values which are in the query list",
+				`{ "x": { "$in": [1] } }`,
+				true,
+				false,
+			},
+			{
+				"not match values which are not in the query list",
+				`{ "x": { "$in": [2] } }`,
+				false,
+				false,
+			},
+			{
+				"match values which are in the query list with many options",
+				`{ "x": { "$in": [1, 2, 3] } }`,
+				true,
+				false,
+			},
+		},
+		`{ "a": { "x": 1 }, "y": 2 }`: []TestCase{
+			{
+				"match nested object properties",
+				`{ "a.x": { "$in": [1] } }`,
+				true,
+				false,
+			},
+			{
+				"not match nested properties if their full key path is not provided",
+				`{ "a": { "$in": [1] } }`,
+				false,
+				false,
+			},
+			{
+				"return an error if a query which is not a list is provided",
+				`{ "a": { "$in": 1 } }`,
+				false,
+				true,
+			},
+		},
+	}
+
+	cases.Generate(nil)
+})
