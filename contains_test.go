@@ -46,6 +46,12 @@ var _ = Describe("$contains", func() {
 				false,
 				false,
 			},
+			{
+				"not match a missing field",
+				`{"y":{"$contains":"xyz"}}`,
+				false,
+				false,
+			},
 		},
 	}
 
