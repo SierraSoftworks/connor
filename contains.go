@@ -21,6 +21,8 @@ func (o *ContainsOperator) Evaluate(conditions, data interface{}) (bool, error) 
 	if c, ok := conditions.(string); ok {
 		if d, ok := data.(string); ok {
 			return strings.Contains(d, c), nil
+		} else if data == nil {
+			return false, nil
 		}
 	}
 
