@@ -1,0 +1,16 @@
+on: push
+name: Go
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          node-version: '>=1.19'
+      - run: go test -v ./... -race -coverprofile=coverage.txt -covermode=atomic
+      - uses: codecov/codecov-action@v2
+        with:
+          file: ./coverage.txt
+  
