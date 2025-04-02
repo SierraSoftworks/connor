@@ -2,11 +2,11 @@ module github.com/SierraSoftworks/connor
 
 go 1.23.0
 
-toolchain go1.23.5
+toolchain go1.24.1
 
 require (
 	github.com/onsi/ginkgo v1.16.5
-	github.com/onsi/gomega v1.36.3
+	github.com/onsi/gomega v1.37.0
 )
 
 require (
